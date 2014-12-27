@@ -26,6 +26,8 @@ class ContainerViewController: UIViewController {
     var translationX: CGFloat? = 0.0
     let animationSpeed = 0.3
     
+    var tapForSlide: UITapGestureRecognizer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -80,8 +82,8 @@ class ContainerViewController: UIViewController {
             self.centerVC.view.transform = CGAffineTransformMakeScale(0.8, 0.8)
             self.currentState = .LeftPanelExpanded
             self.translationX = 300
-            var tapForSlide: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
-            self.centerVC.view.addGestureRecognizer(tapForSlide)
+            self.tapForSlide = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
+            self.centerVC.view.addGestureRecognizer(self.tapForSlide!)
 
             
         })
@@ -115,8 +117,8 @@ class ContainerViewController: UIViewController {
             self.centerVC.view.transform = transform
             self.currentState = .RightPanelExpanded
             self.translationX = -300
-            var tapForSlide: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
-            self.centerVC.view.addGestureRecognizer(tapForSlide)
+            self.tapForSlide = UITapGestureRecognizer(target: self, action: "handleTapGesture:")
+            self.centerVC.view.addGestureRecognizer(self.tapForSlide!)
 
         })
 
@@ -128,12 +130,14 @@ class ContainerViewController: UIViewController {
             self.centerVC.view.center = CGPointMake(UIScreen.mainScreen().bounds.size.width / 2, UIScreen.mainScreen().bounds.size.height / 2)
         }) { (finished) -> Void in
             if finished {
+                
                 self.currentState = .BothCollapsed
                 self.leftViewController?.view.removeFromSuperview()
                 self.leftViewController = nil
                 self.rightViewController?.view.removeFromSuperview()
                 self.rightViewController = nil
                 self.translationX = 0
+                self.centerVC.view.removeGestureRecognizer(self.tapForSlide!)
             }
         }
     }
